@@ -1,0 +1,26 @@
+<!doctype html>
+<html ng-app='weather'>
+  <head>
+    <title>My Local Weather</title>
+  </head>
+  <body ng-controller="showWeather">
+  <h1>{{error}}</h1>
+  <!--
+    {"coord":{"lon":77.6,"lat":12.98},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":22,"pressure":1017,"humidity":53,"temp_min":22,"temp_max":22},"visibility":6000,"wind":{"speed":2.6,"deg":120},"clouds":{"all":0},"dt":1490558400,"sys":{"type":1,"id":7823,"message":0.0026,"country":"IN","sunrise":1490489357,"sunset":1490533251},"id":1277333,"name":"Bangalore","cod":200}
+  -->
+    <h2>Weather</h2>
+      <ul>
+        <li>City:{{weatherResp.name}}</li>
+        <li>Description:{{weatherResp.weather[0].description}}</li>
+        <li>Min temp: {{weatherResp.main.temp_min}}<sup>o</sup>C</li>
+        <li>Max temp: {{weatherResp.main.temp_max}}<sup>o</sup>C</li>
+        <li>Humidity: {{weatherResp.humidity}} %</li>
+      </ul>
+  </body>
+  <!-- build:vendor -->
+  <script src="node_modules/angular/angular.min.js"></script>
+  <!-- endbuild -->
+  <!-- build:appjs -->
+  <script src="app/app.js"></script>
+  <!-- endbuild -->
+</html>

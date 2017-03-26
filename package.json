@@ -1,0 +1,35 @@
+{
+  "name": "mylocalweather",
+  "version": "1.0.0",
+  "description": "This extension shows current temperature and weather conditions in your city",
+  "main": "index.js",
+  "scripts": {
+    "start": "\"npm run lite\"",
+    "lite": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grpramod/myLocalWeather.git"
+  },
+  "keywords": [
+    "weather"
+  ],
+  "author": "Pramod",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/grpramod/myLocalWeather/issues"
+  },
+  "homepage": "https://github.com/grpramod/myLocalWeather#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "^3.0.8",
+    "lite-server": "^2.3.0"
+  },
+  "dependencies": {
+    "angular": "^1.6.3"
+  }
+}
