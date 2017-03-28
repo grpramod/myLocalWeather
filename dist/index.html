@@ -2,21 +2,41 @@
 <html ng-app='weather'>
   <head>
     <title>My Local Weather</title>
+    <link rel="stylesheet" href="css/app.css">
+
   </head>
   <body ng-controller="showWeather">
-  <h1>{{error}}</h1>
-  <!--
-    {"coord":{"lon":77.6,"lat":12.98},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":22,"pressure":1017,"humidity":53,"temp_min":22,"temp_max":22},"visibility":6000,"wind":{"speed":2.6,"deg":120},"clouds":{"all":0},"dt":1490558400,"sys":{"type":1,"id":7823,"message":0.0026,"country":"IN","sunrise":1490489357,"sunset":1490533251},"id":1277333,"name":"Bangalore","cod":200}
-  -->
-    <h2>Weather</h2>
+    <div class="wrapper">
+      <h2>{{weatherResp.name}}</h2>
+      <div class="currentData">
+        <img class="valign" ng-src="http://openweathermap.org/img/w/{{weatherResp.weather[0].icon}}.png" />
+        <span class="capitalize">{{weatherResp.weather[0].description}}</span>
+        <div class="floatRight">
+          <h2 class="units">{{weatherResp.main.temp}}&deg;</h2> <span class="units-txt">{{units}}</span>
+        </div>
+        <h4>Humidity: {{weatherResp.main.humidity}}%</h4>
+      </div>
       <ul>
-        <li>City:{{weatherResp.name}}</li>
-        <li>Description:{{weatherResp.weather[0].description}}</li>
-        <li>Min temp: {{weatherResp.main.temp_min}}<sup>o</sup>C</li>
-        <li>Max temp: {{weatherResp.main.temp_max}}<sup>o</sup>C</li>
-        <li>Humidity: {{weatherResp.humidity}} %</li>
+        <li ng-repeat="opt in weatherForecastResp.list">
+          <img class="valign" ng-src="http://openweathermap.org/img/w/{{opt.weather[0].icon}}.png" />
+          <div class="floatLeft">
+            <h3>{{opt.dt | convertDate}}</h3>
+            <h5>{{opt.weather[0].description}}</h5>
+          </div>
+          <div class="floatRight">
+            <h2 class="units">{{opt.temp.day}}&deg;</h2> <span class="units-txt">{{units}}</span>
+          </div>
+        </li>
       </ul>
+      <div class="options">
+          <button class="units-btn" ng-class="units === 'C'?'active':''" ng-click="convertUnits($event,'C')" type="button">&deg;C</button>
+          <button class="units-btn" ng-class="units === 'F'?'active':''" ng-click="convertUnits($event,'F')" type="button">&deg;F</button>
+      </div>
+      <div class="error">{{error}}</div>
+    </div>
   </body>
+
+
   <script src="lib/angular.min.js"></script>
 
   <script src="js/app.min.js"></script>

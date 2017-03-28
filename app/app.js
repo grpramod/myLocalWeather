@@ -3,16 +3,36 @@ var weatherApp = angular.module('weather',[]);
 
 weatherApp.controller('showWeather',['$scope','$http',function($scope,$http) {
 	$scope.weatherResp = '';
-	$scope.getLocation = function () {
+	$scope.units = 'F';
+	var getLocation = function () {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
+            navigator.geolocation.getCurrentPosition(getPosition, showError);
         }
         else {
             $scope.error = "Geolocation is not supported by this browser.";
         }
     }
 
-    $scope.showError = function (error) {
+    $scope.convertUnits = function(e,param) {
+    	$scope.units = param;
+    	if(angular.element(e.target).hasClass('active')) {
+    		return;
+    	}
+    	//convert farienheit to celcius
+    	if(param === 'C') {
+    		$scope.weatherResp.main.temp = Math.round((5/9) * ($scope.weatherResp.main.temp-32));
+    		angular.forEach($scope.weatherForecastResp.list, function(val,key) {
+    			$scope.weatherForecastResp.list[key].temp.day = Math.round((5/9) * ($scope.weatherForecastResp.list[key].temp.day-32));
+    		});
+    	} else if(param === 'F') {
+    		$scope.weatherResp.main.temp = $scope.weatherResp.main.temp * 9 / 5 + 32;
+    		angular.forEach($scope.weatherForecastResp.list, function(val,key) {
+    			$scope.weatherForecastResp.list[key].temp.day = $scope.weatherForecastResp.list[key].temp.day * 9 / 5 + 32;
+    		});
+    	}
+    }
+
+    var showError = function (error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation."
@@ -26,29 +46,48 @@ weatherApp.controller('showWeather',['$scope','$http',function($scope,$http) {
             case error.UNKNOWN_ERROR:
                 $scope.error = "An unknown error occurred."
                 break;
+            default:
+            	$scope.error = "An unknown error occurred."
+            	break;
         }
         $scope.$apply();
     }
-
-    $scope.showPosition = function (position) {
-        $scope.lat = position.coords.latitude;
-        $scope.lng = position.coords.longitude;
-        $scope.$apply();
-        //API for Current weather
-        /*$http.get('http://api.openweathermap.org/data/2.5/weather?lat='+$scope.lat+'&lon='+$scope.lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=metric')
+    var getWeatherData = function(url,success,error) {
+    	$http.get(url)
 	        .success(function(resp) {
-	            $scope.weatherResp = resp;
+	            success(resp);
 	            console.log(JSON.stringify(resp));
-	    });*/
-	    //API for forcast 
-	    /*$http.get('http://api.openweathermap.org/data/2.5/forecast?lat='+$scope.lat+'&lon='+$scope.lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=metric')
-	        .success(function(resp) {
-	            $scope.weatherResp = resp;
-	            console.log(JSON.stringify(resp));
-	    });*/
-	    $scope.weatherResp = {"coord":{"lon":77.6,"lat":12.98},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":22,"pressure":1017,"humidity":53,"temp_min":22,"temp_max":22},"visibility":6000,"wind":{"speed":2.6,"deg":120},"clouds":{"all":0},"dt":1490558400,"sys":{"type":1,"id":7823,"message":0.0026,"country":"IN","sunrise":1490489357,"sunset":1490533251},"id":1277333,"name":"Bangalore","cod":200};
-    	
-    	$scope.$apply();
+	    	})
+	    	.error(function(err) {
+	    		error(err);
+	    	});
     }
-    $scope.getLocation();
+    var currentData = function(resp) {
+    	$scope.weatherResp = resp;
+    	//Set the current weather as title to the icon
+    	window.chrome.browserAction.setBadgeText({text:$scope.weatherResp.main.temp.toString()});
+    }
+    var forcastData = function(resp) {
+    	$scope.weatherForecastResp = resp;
+    }
+    var getPosition = function (position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        $scope.$apply();
+        //Get Current weather
+        getWeatherData('http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=imperial',currentData,showError);
+        //Get forecast weather
+        getWeatherData('http://api.openweathermap.org/data/2.5/forecast/daily?lat='+lat+'&lon='+lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=imperial',forcastData,showError);
+    }
+    
+    getLocation();
 }]);
+
+weatherApp.filter('convertDate', function() {
+	return function (items) {
+		var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		if(items!== undefined) {
+			return days[new Date(items*1000).getDay()];
+		}
+	}
+});
