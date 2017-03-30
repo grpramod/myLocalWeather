@@ -22,18 +22,23 @@
   },
   "homepage": "https://github.com/grpramod/myLocalWeather#readme",
   "devDependencies": {
+    "angular": "^1.6.3",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-html-replace": "^1.6.2",
+    "gulp-protractor": "^4.1.0",
     "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
     "jasmine-core": "^2.5.2",
+    "jasmine-sinon": "^0.4.0",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",
+    "karma-jasmine-sinon": "^1.0.4",
+    "karma-sinon": "^1.0.5",
     "lite-server": "^2.3.0",
-    "selenium-webdriver": "^3.3.0"
+    "selenium-webdriver": "^3.3.0",
   },
   "dependencies": {
     "angular": "^1.6.3"

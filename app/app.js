@@ -1,18 +1,25 @@
 var weatherApp = angular.module('weather',[]);
 
-
-weatherApp.controller('showWeather',['$scope','$http',function($scope,$http) {
+weatherApp.controller('showWeatherController',['$scope','$http','$window',function($scope,$http,$window) {
 	$scope.weatherResp = '';
+	$scope.weatherForecastResp = '';
 	$scope.units = 'F';
-	var getLocation = function () {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(getPosition, showError);
+    $window.chrome.storage.sync.get('error', function(result) {
+        if(result.error=== undefined) {
+            $window.chrome.storage.sync.get('currentData', function(result) {
+                $scope.weatherResp = result.currentData;
+                $scope.$apply();
+            });
+            $window.chrome.storage.sync.get('forecastData', function(result) {                    
+                $scope.weatherForecastResp = result.forecastData;
+                $scope.$apply();
+            });
+        } else {
+            $scope.error = result.error;
+            $scope.$apply();
         }
-        else {
-            $scope.error = "Geolocation is not supported by this browser.";
-        }
-    }
-
+    });
+    //Conver the units to/from C and F
     $scope.convertUnits = function(e,param) {
     	$scope.units = param;
     	if(angular.element(e.target).hasClass('active')) {
@@ -31,58 +38,9 @@ weatherApp.controller('showWeather',['$scope','$http',function($scope,$http) {
     		});
     	}
     }
-
-    var showError = function (error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                $scope.error = "User denied the request for Geolocation."
-                break;
-            case error.POSITION_UNAVAILABLE:
-                $scope.error = "Location information is unavailable."
-                break;
-            case error.TIMEOUT:
-                $scope.error = "The request to get user location timed out."
-                break;
-            case error.UNKNOWN_ERROR:
-                $scope.error = "An unknown error occurred."
-                break;
-            default:
-            	$scope.error = "An unknown error occurred."
-            	break;
-        }
-        $scope.$apply();
-    }
-    var getWeatherData = function(url,success,error) {
-    	$http.get(url)
-	        .success(function(resp) {
-	            success(resp);
-	            console.log(JSON.stringify(resp));
-	    	})
-	    	.error(function(err) {
-	    		error(err);
-	    	});
-    }
-    var currentData = function(resp) {
-    	$scope.weatherResp = resp;
-    	//Set the current weather as title to the icon
-    	window.chrome.browserAction.setBadgeText({text:$scope.weatherResp.main.temp.toString()});
-    }
-    var forcastData = function(resp) {
-    	$scope.weatherForecastResp = resp;
-    }
-    var getPosition = function (position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        $scope.$apply();
-        //Get Current weather
-        getWeatherData('http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=imperial',currentData,showError);
-        //Get forecast weather
-        getWeatherData('http://api.openweathermap.org/data/2.5/forecast/daily?lat='+lat+'&lon='+lng+'&appid=708518532a791afde6d31d0fa4783fbf&units=imperial',forcastData,showError);
-    }
-    
-    getLocation();
 }]);
 
+//Filter to convert milliseconds to date format
 weatherApp.filter('convertDate', function() {
 	return function (items) {
 		var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];

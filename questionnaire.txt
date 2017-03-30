@@ -1,0 +1,83 @@
+The extension name is : My Local Weather
+
+Describe what the user interface of the extension could look like.
+	* I will be using the browserAction popup for this extension, in this popup, I will show the current temperature in Fahrenheit by default and there will be an
+       option to change it to celsius.
+	* There will be weather forecast for upcoming week displayed.
+        * Current temperature will be always displayed with the extension icon for quick view(window.chrome.browserAction.setBadgeText()).
+        * The temperature will be updated in the background for every 6hours(usually temperature will not change that frequenlty :)). Created alarams to update the temperature.
+	
+	Due to the time constraints, I may not be able to implement these feature, 
+		* Options page to set the user preferences like, default units, City etc.....
+ 
+What information does the extension require?
+	* Extension will require current and forcast temperature and weather conditions for a given lat lon positions, when ever the user clicks on the extension,
+       it should fetch the latest information and show it to the user.   
+   
+How can you acquire this information? Be specific.
+	* There are many opensource API's w hich will provide this information on demand, but there are few restrictions for free user account.
+	* I have chosen OpenWeatherMap API for this extension, I have created a free account with them and got a key to get the weather information.
+	* I will be using their API's to get the current and forcast weather data.
+	
+For which browser would you develop the extension and why?
+	* I am trying to develop the weather extension for crossbrowsers, i.e Chrome, Firefox, IE(Edge) and Opera.
+	* We need to develop an extension which will work on major browsers as the users may choose to browse on their favourite browsers, 
+	   The main goal is to maintain single source codebase and generate extensions for all major browsers(latest versions).
+	
+Give a high-level overview of the applications components and data flows
+	This the structure of the extension.
+	./
+		css
+			app.css
+		js
+			app.js
+                        background.js
+		lib
+			angular.min.js
+		index.html
+		manifest.json
+		icon.png
+		background.jpg
+		
+		getLocation():
+			When the extension is loaded, a method is triggered to get the current location of the user, 
+		getWeatherData():			
+			After getting the users lat lon, a call is made to OpenWeatherMap API to get the current and forecast weather data.
+			After successfully getting the response, the template view is updated with the values.
+		convertUnits():
+			There is a toggle button in the extension popup, to see the temperatures in Celcius and Fahrenheit, when the user click the temperture will be changed to selected units.
+		test	
+			Unit tests for the extension
+
+        On extension load, background.js is executed, where we get the user lat lon position and make a call to openweathermap API to get the temperature info and will set it to local storage, then this info is fetched when the extension is called, angular will update it to the view.
+			
+What technology and or frameworks would you use to implement this extension and why?
+	  * I did some research on different frameworks which will provide the cross browser extension development, 
+		 I got few open source and non-opensource like BabelExt, Crossrider,WebMynd(trigger.io), KangoExtensions, etc, but in these some are outdated,
+		 KangoExtensions is opensource for non-profit, it is framework where we can build extensions for IE, Chrome, Firefox and Safari[but not Opera :( ].
+	  * After some research, I got to know that the code we develop for an extension can work on Firefox, Chrome, Opera and latest version of IE (Edge) with few changes. 
+	     So, we don't need any framwork to develop crossbrowser extensions. We can use WebExtensions API.
+	  * There is a chrome notifications API, which we can use for notifying the temperature to the user as a desktop notifications, but this API will work only with chrome browser.
+		W3c Notifications API is still not matured to use, it will work in all browsers but this API is still not supported in the browsers. We can use (Notification.sticky) property to show the temperature all the time as a sticky note and update them periodically.
+	  
+	  Finally, I have decided to go with these technologies
+	  
+	  * Angular JS, HTML, CSS, JavaScript - for UI
+		-- There is huge discussion on this topic to use angular or not. Angular JS vs Browser Extensions--> https://news.ycombinator.com/item?id=12754199
+		We can do it with vanila JavaScript, but I used angular to auto update the temperature view when we get the latest values.
+	  * WebExtensions API
+	  * Node JS, lite-server, Gulp for development.  
+	  
+What kind of testing can you implement for your application?
+	* I have chosen Karma(test runner) and Jasmine for my unit test. That is the recomended suite for any Angular applications
+	* We can use Protractor for E2E tests, which is recomended by Angular(but out of scope for this task).	
+
+What do you need to consider when your extension will be used by more and more users?
+	* To minimize the initial load time of the extension
+	* Avoiding Memory leaks, otherwise browser will crash
+	* i18n
+	* CDN, cache content	
+How would you share your code with Avira?
+	* I will share the code base via GitHub, here is the GitHub link for the weather extension project
+	https://github.com/grpramod/myLocalWeather.git 
+	* I have commited all the node_module folder as well to the GitHub which is not required but in any case for safe side I have commited.
