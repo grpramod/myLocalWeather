@@ -23,6 +23,7 @@
   "homepage": "https://github.com/grpramod/myLocalWeather#readme",
   "devDependencies": {
     "angular": "^1.6.3",
+    "angular-mock": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
@@ -38,7 +39,7 @@
     "karma-jasmine-sinon": "^1.0.4",
     "karma-sinon": "^1.0.5",
     "lite-server": "^2.3.0",
-    "selenium-webdriver": "^3.3.0",
+    "selenium-webdriver": "^3.3.0"
   },
   "dependencies": {
     "angular": "^1.6.3"
